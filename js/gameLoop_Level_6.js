@@ -10,6 +10,9 @@ var fy = .90;
 
 var bullets = [];
 
+var canShootP1 = true;
+var canShootP2 = true;
+
 
 player = new gameObject();
 player.x = 200;
@@ -33,7 +36,8 @@ function animate()
     player.drawTriangle();
     player2.drawLeftTriangle();
 
-    shoot();
+    shootP1();
+    shootP2();
     moveBullets();
 }
 
@@ -115,11 +119,40 @@ function angularMovement()
     player.move();
     player2.move();
 }
-
-function shoot()
+function shootP1()
 {
-    if(enter)
+    if(spaceBar && canShootP1)
     {
+        canShootP1 = false;
+
+        console.log("P1 Shoots");
+
+        var radians = (player.angle) * Math.PI / 180;
+
+        var tipX = player.x + Math.cos(radians) * (player.width / 2);
+        var tipY = player.y + Math.sin(radians) * (player.width / 2);
+
+        var bullet = new gameObject(tipX, tipY, 10, 10, player.color);
+
+        bullet.force = 8;
+        bullet.vx = Math.cos(radians) * bullet.force;
+        bullet.vy = Math.sin(radians) * bullet.force;
+
+        bullets.push(bullet);
+    }
+
+    if(!spaceBar)
+    {
+        canShootP1 = true;
+    }
+}
+function shootP2()
+{
+    // player2
+    if(enter && canShootP2)
+    {
+        canShootP2 = false;
+
         console.log("P2 Shoots");
 
         var radians = (player2.angle + 180) * Math.PI / 180;
@@ -135,7 +168,33 @@ function shoot()
 
         bullets.push(bullet);
     }
+
+    if(!enter)
+    {
+        canShootP2 = true;
+    }
 }
+// function shoot() // bullet hell code!!
+// {
+//     // player2
+//     if(enter)
+//     {
+//         console.log("P2 Shoots");
+
+//         var radians = (player2.angle + 180) * Math.PI / 180;
+
+//         var tipX = player2.x + Math.cos(radians) * (player2.width / 2);
+//         var tipY = player2.y + Math.sin(radians) * (player2.width / 2);
+
+//         var bullet = new gameObject(tipX, tipY, 10, 10, player2.color);
+
+//         bullet.force = 8;
+//         bullet.vx = Math.cos(radians) * bullet.force;
+//         bullet.vy = Math.sin(radians) * bullet.force;
+
+//         bullets.push(bullet);
+//     }
+// }
 
 function moveBullets()
 {
@@ -145,3 +204,8 @@ function moveBullets()
         bullets[i].drawCircle();
     }
 }
+
+// function hitPlayer()
+// {
+//     if (bullet.width/2)
+// }
