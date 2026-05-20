@@ -33,6 +33,13 @@ player2.force = 1;
 function animate()
 {
     context.clearRect(0,0,canvas.width, canvas.height);
+
+           //The Score // 
+        context.fillStyle = "#000000";
+        context.font = "30px Arial";
+        context.fillText("P1:"+ p1Score, 400, 50);
+        context.fillText("P2:"+ p2Score, 550, 50)
+
    
     angularMovement();
 
@@ -43,6 +50,7 @@ function animate()
     shootP2();
     moveBullets();
     checkBulletHits();
+    victory();
 }
 
 function angularMovement()
@@ -219,6 +227,7 @@ function checkBulletHits()
     {
         var bullet = bullets[i];
 
+        // player2;
         if(bullet.owner != "p1") // .ownwer needs to be in this function only
         {
             var dx1 = bullet.x - player.x;
@@ -228,8 +237,10 @@ function checkBulletHits()
             if(distance1 < player.width / 2)
             {
                 console.log("P1 was hit");
+                p2Score++;
                 bullets.splice(i, 1); // splice removes data from an array
-                continue;
+                continue; // skip the rest of this loop cycle and go to the next one
+                          // similar to c++
             }
         }
 
@@ -242,9 +253,45 @@ function checkBulletHits()
             if(distance2 < player2.width / 2)
             {
                 console.log("P2 was hit");
+                p1Score++;
                 bullets.splice(i, 1);
                 continue;
             }
         }
+    }
+}
+
+function victory()
+{
+    if(p1Score === 10)
+    {
+        context.clearRect(0,0,canvas.width, canvas.height);
+        console.log("P1 wins")
+
+           //The Score // 
+        context.fillStyle = player.color;
+        context.font = "30px Arial";
+        context.fillText("Player 1 Wins", 400, 50);
+        context.fillText("Press F5 to play again", 400, 100)
+        context.fillText("OR Press Any buttom to continue keep playing", 400, 150)
+
+
+    }
+        if(p2Score === 10) //
+        // 3 equal signs is used for comparing the exact same value and type
+        // so 5 (a integer) === "5" (string) is false, but 5 == "5" is fine
+        // don't know 
+    {
+        context.clearRect(0,0,canvas.width, canvas.height);
+        console.log("P2 wins")
+
+           //The Score // 
+        context.fillStyle = player2.color;
+        context.font = "30px Arial";
+        context.fillText("Player 2 Wins", 400, 50);
+        context.fillText("Press F5 for new game", 400, 100)
+        context.fillText("OR Press Any buttom to continue keep playing", 400, 150)
+
+
     }
 }
