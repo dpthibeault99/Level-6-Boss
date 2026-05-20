@@ -13,6 +13,9 @@ var bullets = [];
 var canShootP1 = true;
 var canShootP2 = true;
 
+var p1Score = 0;
+var p2Score = 0;
+
 
 player = new gameObject();
 player.x = 200;
@@ -39,6 +42,7 @@ function animate()
     shootP1();
     shootP2();
     moveBullets();
+    checkBulletHits();
 }
 
 function angularMovement()
@@ -123,7 +127,7 @@ function shootP1()
 {
     if(spaceBar && canShootP1)
     {
-        canShootP1 = false;
+        canShootP1 = false; // booleans prevent bullet hell
 
         console.log("P1 Shoots");
 
@@ -133,6 +137,8 @@ function shootP1()
         var tipY = player.y + Math.sin(radians) * (player.width / 2);
 
         var bullet = new gameObject(tipX, tipY, 10, 10, player.color);
+        bullet.owner = "p1"; // this doesnt actully need to be here... (see function moveBullets() )
+
 
         bullet.force = 8;
         bullet.vx = Math.cos(radians) * bullet.force;
@@ -161,6 +167,8 @@ function shootP2()
         var tipY = player2.y + Math.sin(radians) * (player2.width / 2);
 
         var bullet = new gameObject(tipX, tipY, 10, 10, player2.color);
+        bullet.owner = "p2";
+
 
         bullet.force = 8;
         bullet.vx = Math.cos(radians) * bullet.force;
@@ -205,7 +213,38 @@ function moveBullets()
     }
 }
 
-// function hitPlayer()
-// {
-//     if (bullet.width/2)
-// }
+function checkBulletHits()
+{
+    for(var i = bullets.length - 1; i >= 0; i--)
+    {
+        var bullet = bullets[i];
+
+        if(bullet.owner != "p1") // .ownwer needs to be in this function only
+        {
+            var dx1 = bullet.x - player.x;
+            var dy1 = bullet.y - player.y;
+            var distance1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+
+            if(distance1 < player.width / 2)
+            {
+                console.log("P1 was hit");
+                bullets.splice(i, 1); // splice removes data from an array
+                continue;
+            }
+        }
+
+        if(bullet.owner != "p2")
+        {
+            var dx2 = bullet.x - player2.x;
+            var dy2 = bullet.y - player2.y;
+            var distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+            if(distance2 < player2.width / 2)
+            {
+                console.log("P2 was hit");
+                bullets.splice(i, 1);
+                continue;
+            }
+        }
+    }
+}
